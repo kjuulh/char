@@ -17,7 +17,9 @@ type PluginRegisterBuilder struct {
 }
 
 func NewPluginRegisterBuilder() *PluginRegisterBuilder {
-	return &PluginRegisterBuilder{}
+	return &PluginRegisterBuilder{
+		plugins: make(map[string]PluginAPI),
+	}
 }
 
 func (pr *PluginRegisterBuilder) Add(name, path string) *PluginRegisterBuilder {
