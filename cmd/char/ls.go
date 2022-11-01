@@ -15,20 +15,23 @@ func NewLsCommand() *cobra.Command {
 
 			r, err := register.
 				NewPluginRegisterBuilder().
-				Add("gocli", "").
+				Add("gocli", "plugins/gocli/main.go").
+				Add("rust", "plugins/rust/main.go").
 				Build(ctx)
 			if err != nil {
 				return err
 			}
+			defer r.Close()
 
 			about, err := r.About(ctx)
 			if err != nil {
 				return err
 			}
 
-			for plugin, aboutText := range about {
-				fmt.Printf("plugin: %s\n", plugin)
-				fmt.Printf("\tabout: %s\n", aboutText)
+			for _, a := range about {
+				fmt.Printf("plugin: %s\n", a.Name)
+				fmt.Printf("\tversion: %s\n", a.Version)
+				fmt.Printf("\tabout: %s\n", a.About)
 				fmt.Println()
 			}
 

@@ -1,0 +1,4 @@
+registry: git.front.kjuulh.io
+plugins:
+  "kjuulh/char#plugins/gocli": {}
+  "kjuulh/char#plugins/rust": {}

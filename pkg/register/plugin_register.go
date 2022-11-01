@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 
@@ -23,7 +24,9 @@ func NewPluginRegisterBuilder() *PluginRegisterBuilder {
 }
 
 func (pr *PluginRegisterBuilder) Add(name, path string) *PluginRegisterBuilder {
-	pr.plugins[name] = PluginAPI{}
+	pr.plugins[name] = PluginAPI{
+		path: path,
+	}
 
 	return pr
 }
@@ -32,10 +35,38 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 	clients := make(map[string]*pluginClientWrapper, 0)
 	errgroup, _ := errgroup.WithContext(ctx)
 
+	if err := os.MkdirAll(".char/plugins/", 0755); err != nil {
+		return nil, err
+	}
+
 	for name, p := range pr.plugins {
 		name, p := name, p
 
 		errgroup.Go(func() error {
+			pluginPath := fmt.Sprintf(".char/plugins/%s/dist/%s", name, name)
+
+			_, err := os.Stat(pluginPath)
+			if err != nil || os.Getenv("CHAR_DEV_MODE") == "true" {
+				log.Printf("building: %s", name)
+				cmd := exec.Command(
+					"sh",
+					"-c",
+					fmt.Sprintf(
+						"(cd .char/plugins/%s; go build -o dist/%s %s)",
+						name,
+						name,
+						p.path,
+					),
+				)
+				output, err := cmd.CombinedOutput()
+				if len(output) > 0 {
+					log.Println(string(output))
+				}
+				if err != nil {
+					return fmt.Errorf("could not build plugin: %w", err)
+				}
+			}
+
 			client := plugin.NewClient(&plugin.ClientConfig{
 				HandshakeConfig: plugin.HandshakeConfig{
 					ProtocolVersion:  1,
@@ -45,13 +76,15 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 				Logger: hclog.New(&hclog.LoggerOptions{
 					Name:   "char",
 					Output: os.Stdout,
-					Level:  hclog.Debug,
+					Level:  hclog.Error,
 				}),
-				Cmd: exec.Command("sh", "-c", fmt.Sprintf(
-					"(cd ./.char/plugins/%s; go run plugins/%s/main.go)",
-					name,
-					name,
-				)),
+				Cmd: exec.Command(
+					fmt.Sprintf(
+						".char/plugins/%s/dist/%s",
+						name,
+						name,
+					),
+				),
 				Plugins: map[string]plugin.Plugin{
 					name: &p,
 				},
@@ -126,17 +159,30 @@ func (pr *PluginRegister) Close() error {
 	return nil
 }
 
-func (pr *PluginRegister) About(ctx context.Context) (map[string]string, error) {
-	list := make(map[string]string, len(pr.clients))
+type AboutItem struct {
+	Name    string
+	Version string
+	About   string
+}
+
+func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
+	list := make([]AboutItem, 0)
 
 	errgroup, ctx := errgroup.WithContext(ctx)
 
 	for n, c := range pr.clients {
 		n, c := n, c
 		errgroup.Go(func() error {
-			about := c.plugin.About()
+			about, err := c.plugin.About(ctx)
+			if err != nil {
+				return err
+			}
 
-			list[n] = about
+			list = append(list, AboutItem{
+				Name:    n,
+				Version: about.Version,
+				About:   about.About,
+			})
 			return nil
 		})
 	}

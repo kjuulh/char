@@ -1,7 +1,8 @@
 package register
 
 import (
-	"log"
+	"context"
+	"encoding/json"
 	"net/rpc"
 )
 
@@ -11,12 +12,18 @@ type PluginClient struct {
 
 var _ Plugin = &PluginClient{}
 
-func (pc *PluginClient) About() string {
+func (pc *PluginClient) About(ctx context.Context) (*About, error) {
 	var resp string
 	err := pc.client.Call("Plugin.About", new(any), &resp)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return resp
+	var about About
+	err = json.Unmarshal([]byte(resp), &about)
+	if err != nil {
+		return nil, err
+	}
+
+	return &about, nil
 }
