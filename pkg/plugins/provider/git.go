@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"git.front.kjuulh.io/kjuulh/char/pkg/schema"
 	"golang.org/x/sync/errgroup"
@@ -38,8 +39,18 @@ func (gpp *GitPluginProvider) FetchPlugins(ctx context.Context, registry string,
 				"%s/%s",
 				strings.TrimRight(baseDir, "/"), n.Hash(),
 			)
-			if _, err := os.Stat(dest); errors.Is(err, os.ErrNotExist) {
+			fileinfo, err := os.Stat(dest)
+			if errors.Is(err, os.ErrNotExist) {
 				log.Printf("fetching git plugin repo: %s", n)
+				return gpp.FetchPlugin(
+					ctx,
+					registry,
+					plugin,
+					dest,
+				)
+			}
+			if fileinfo.ModTime().Add(time.Hour * 1).Before(time.Now()) {
+				log.Printf("fetching git plugin repo: %s as it is stale", n)
 				return gpp.FetchPlugin(
 					ctx,
 					registry,
@@ -61,13 +72,22 @@ func (gpp *GitPluginProvider) FetchPlugins(ctx context.Context, registry string,
 }
 
 func (gpp *GitPluginProvider) FetchPlugin(ctx context.Context, registry string, plugin *schema.CharSchemaPlugin, dest string) error {
-	cloneUrl, err := plugin.Opts.GetCloneUrl(ctx, registry, &schema.CloneUrlOpt{
-		Protocol: schema.GitProtocolSsh,
-		SshUser:  "git",
-	},
+	cloneUrl, err := plugin.Opts.GetCloneUrl(
+		ctx,
+		registry,
+		&schema.CloneUrlOpt{
+			Protocol: schema.GitProtocolSsh,
+			SshUser:  "git",
+		},
 	)
 	if err != nil {
 		return err
+	}
+
+	if _, err := os.Stat(dest); !errors.Is(err, os.ErrNotExist) {
+		if err = os.RemoveAll(dest); err != nil {
+			return err
+		}
 	}
 
 	output, err := exec.Command(
