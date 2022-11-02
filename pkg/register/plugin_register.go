@@ -91,7 +91,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 					),
 				),
 				Plugins: map[string]plugin.Plugin{
-					name: &p,
+					PluginKey: &p,
 				},
 			})
 
@@ -175,8 +175,8 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 
 	errgroup, ctx := errgroup.WithContext(ctx)
 
-	for n, c := range pr.clients {
-		n, c := n, c
+	for _, c := range pr.clients {
+		c := c
 		errgroup.Go(func() error {
 			about, err := c.plugin.About(ctx)
 			if err != nil {
@@ -184,7 +184,7 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 			}
 
 			list = append(list, AboutItem{
-				Name:    n,
+				Name:    about.Name,
 				Version: about.Version,
 				About:   about.About,
 			})

@@ -11,3 +11,5 @@ type About struct {
 type Plugin interface {
 	About(ctx context.Context) (*About, error)
 }
+
+const PluginKey = "plugin"

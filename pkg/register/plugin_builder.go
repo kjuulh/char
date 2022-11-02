@@ -20,7 +20,7 @@ func NewPluginBuilder(p Plugin) *PluginBuilder {
 	})
 
 	var pluginMap = map[string]plugin.Plugin{
-		"plugin": &PluginAPI{
+		PluginKey: &PluginAPI{
 			Impl: p,
 		},
 	}
