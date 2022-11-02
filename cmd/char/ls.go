@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"git.front.kjuulh.io/kjuulh/char/pkg/register"
+	"git.front.kjuulh.io/kjuulh/char/pkg/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +13,11 @@ func NewLsCommand() *cobra.Command {
 		Use: "ls",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
+
+			_, err := schema.ParseFile(ctx, ".char.yml")
+			if err != nil {
+				return err
+			}
 
 			r, err := register.
 				NewPluginRegisterBuilder().
@@ -32,7 +38,6 @@ func NewLsCommand() *cobra.Command {
 				fmt.Printf("plugin: %s\n", a.Name)
 				fmt.Printf("\tversion: %s\n", a.Version)
 				fmt.Printf("\tabout: %s\n", a.About)
-				fmt.Println()
 			}
 
 			return nil

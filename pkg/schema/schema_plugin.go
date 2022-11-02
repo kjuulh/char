@@ -1,6 +1,9 @@
 package schema
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -14,7 +17,39 @@ type PluginOps struct {
 	Version        string
 }
 
-func (cspn CharSchemaPluginName) Get() *PluginOps {
+type GitProtocol string
+
+const (
+	GitProtocolHttps GitProtocol = "https"
+	GitProtocolSsh               = "ssh"
+)
+
+type CloneUrlOpt struct {
+	Protocol GitProtocol
+	SshUser  string
+}
+
+func (po *PluginOps) GetCloneUrl(ctx context.Context, registry string, opt *CloneUrlOpt) (string, error) {
+	if opt == nil {
+		return "", errors.New("opt is required")
+	}
+	switch opt.Protocol {
+	case GitProtocolHttps:
+		return fmt.Sprintf("https://%s/%s/%s.git", registry, po.Org, po.RepositoryName), nil
+	case GitProtocolSsh:
+		return fmt.Sprintf("%s@%s:%s/%s.git", opt.SshUser, registry, po.Org, po.RepositoryName), nil
+	default:
+		return "", errors.New("protocol not allowed")
+	}
+}
+
+var memo = map[string]*PluginOps{}
+
+func (cspn CharSchemaPluginName) Get() (*PluginOps, error) {
+	if m, ok := memo[string(cspn)]; ok {
+		return m, nil
+	}
+
 	po := &PluginOps{}
 	reg := regexp.MustCompile(
 		`(?P<org>[\d\w\-_\.]+)\/(?P<repo>[\d\w\-_\.]+)(?P<path>#[\d\w\-_\.\/]+)?(?P<version>@[\d\w\-_\.\/]+)?(?P<path>#[\d\w\-_\.\/]+)?`,
@@ -43,7 +78,13 @@ func (cspn CharSchemaPluginName) Get() *PluginOps {
 		po.Version = strings.TrimLeft(version, "@")
 	}
 
-	return po
+	if po.Org == "" || po.RepositoryName == "" {
+		return nil, errors.New("could not find org or repository name")
+	}
+
+	memo[string(cspn)] = po
+
+	return po, nil
 }
 
 type CharSchemaPlugins map[CharSchemaPluginName]CharSchemaPlugin

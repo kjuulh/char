@@ -7,14 +7,13 @@ import (
 	"git.front.kjuulh.io/kjuulh/char/pkg/register"
 )
 
-type GoCliPlugin struct {
-}
+type GoCliPlugin struct{}
 
 func (*GoCliPlugin) About(ctx context.Context) (*register.About, error) {
 	return &register.About{
 		Name:    "rust",
 		Version: "v0.0.1",
-		About:   "golang cli provides a set of actions and presets supporting golang development",
+		About:   "rust cli provides a set of actions and presets supporting rust development",
 	}, nil
 }
 

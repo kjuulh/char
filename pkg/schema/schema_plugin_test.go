@@ -1,6 +1,7 @@
 package schema_test
 
 import (
+	"context"
 	"testing"
 
 	"git.front.kjuulh.io/kjuulh/char/pkg/schema"
@@ -65,8 +66,61 @@ func TestSchemaNameCanParse(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			actual := tc.inputString.Get()
+			actual, _ := tc.inputString.Get()
 			require.Equal(t, tc.expected, *actual)
 		})
 	}
+}
+
+func TestPluginOpt(t *testing.T) {
+	t.Parallel()
+
+	tt := []struct {
+		name        string
+		pluginOpt   schema.PluginOps
+		cloneUrlOpt schema.CloneUrlOpt
+		registry    string
+		expected    string
+	}{
+		{
+			name: "ssh values",
+			pluginOpt: schema.PluginOps{
+				Org:            "kjuulh",
+				RepositoryName: "char",
+				Path:           "",
+				Version:        "",
+			},
+			cloneUrlOpt: schema.CloneUrlOpt{
+				Protocol: schema.GitProtocolSsh,
+				SshUser:  "git",
+			},
+			registry: "git.front.kjuulh.io",
+			expected: "git@git.front.kjuulh.io:kjuulh/char.git",
+		},
+		{
+			name: "https values",
+			pluginOpt: schema.PluginOps{
+				Org:            "kjuulh",
+				RepositoryName: "char",
+				Path:           "",
+				Version:        "",
+			},
+			cloneUrlOpt: schema.CloneUrlOpt{
+				Protocol: schema.GitProtocolHttps,
+			},
+			registry: "git.front.kjuulh.io",
+			expected: "https://git.front.kjuulh.io/kjuulh/char.git",
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			url, err := tc.pluginOpt.GetCloneUrl(context.Background(), tc.registry, &tc.cloneUrlOpt)
+
+			require.NoError(t, err)
+			require.Equal(t, tc.expected, url)
+
+		})
+	}
+
 }

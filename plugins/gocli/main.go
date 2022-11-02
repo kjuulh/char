@@ -7,8 +7,7 @@ import (
 	"git.front.kjuulh.io/kjuulh/char/pkg/register"
 )
 
-type GoCliPlugin struct {
-}
+type GoCliPlugin struct{}
 
 func (*GoCliPlugin) About(ctx context.Context) (*register.About, error) {
 	return &register.About{
