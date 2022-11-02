@@ -64,3 +64,7 @@ func (cc *CharContext) Close() {
 func (cc *CharContext) About(ctx context.Context) ([]register.AboutItem, error) {
 	return cc.pluginRegister.About(ctx)
 }
+
+func (cc *CharContext) Do(ctx context.Context, argName string, commandName string) error {
+	return nil
+}

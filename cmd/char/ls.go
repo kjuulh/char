@@ -32,10 +32,11 @@ func NewLsCommand(charctx *charcontext.CharContext) *cobra.Command {
 				if len(a.Commands) > 0 {
 					fmt.Println("\tCommands:")
 					for _, ac := range a.Commands {
-						fmt.Printf("\t\t%s", ac)
+						fmt.Printf("\t\t%s\n", ac.Name)
 						if len(ac.Args) == 0 {
 							continue
 						}
+						fmt.Println("\t\tArgs")
 						for _, aca := range ac.Args {
 							isrequired := false
 							for _, acr := range ac.Required {

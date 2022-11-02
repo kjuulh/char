@@ -12,6 +12,7 @@ func NewCharCmd(charctx *charcontext.CharContext) *cobra.Command {
 
 	cmd.AddCommand(
 		NewLsCommand(charctx),
+		NewDoCommand(charctx),
 	)
 
 	return cmd

@@ -44,7 +44,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 		name, p := name, p
 
 		errgroup.Go(func() error {
-			pluginPath := fmt.Sprintf(".char/plugins/%s/dist/cmd", name)
+			pluginPath := fmt.Sprintf(".char/plugins/%s/dist/plugin", name)
 
 			_, err := os.Stat(pluginPath)
 			if err != nil || os.Getenv("CHAR_DEV_MODE") == "true" {

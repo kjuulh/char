@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -27,22 +28,28 @@ func (gpp *GitPluginProvider) FetchPlugins(ctx context.Context, registry string,
 		}
 	}
 	if err := os.MkdirAll(baseDir, 0755); err != nil {
-		return err
+		return fmt.Errorf("path already exists cannot create: %w", err)
 	}
 
 	for n, plugin := range plugins {
 		n, plugin := n, plugin
 		errgroup.Go(func() error {
-			log.Printf("fetching git plugin repo: %s", n)
-			return gpp.FetchPlugin(
-				ctx,
-				registry,
-				plugin,
-				fmt.Sprintf(
-					"%s/%s",
-					strings.TrimRight(baseDir, "/"), n.Hash(),
-				),
+			dest := fmt.Sprintf(
+				"%s/%s",
+				strings.TrimRight(baseDir, "/"), n.Hash(),
 			)
+			if _, err := os.Stat(dest); errors.Is(err, os.ErrNotExist) {
+				log.Printf("fetching git plugin repo: %s", n)
+				return gpp.FetchPlugin(
+					ctx,
+					registry,
+					plugin,
+					dest,
+				)
+			}
+
+			return nil
+
 		})
 	}
 
@@ -66,6 +73,7 @@ func (gpp *GitPluginProvider) FetchPlugin(ctx context.Context, registry string, 
 	output, err := exec.Command(
 		"git",
 		"clone",
+		"--depth=1",
 		cloneUrl,
 		dest,
 	).CombinedOutput()
