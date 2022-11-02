@@ -14,6 +14,16 @@ func (*GoCliPlugin) About(ctx context.Context) (*register.About, error) {
 		Name:    "gocli",
 		Version: "v0.0.1",
 		About:   "golang cli provides a set of actions and presets supporting golang development",
+		Vars: []string{
+			"dev.mode",
+		},
+		Commands: []*register.AboutCommand{
+			{
+				Name:     "local_up",
+				Args:     []string{"fish"},
+				Required: []string{"fish"},
+			},
+		},
 	}, nil
 }
 

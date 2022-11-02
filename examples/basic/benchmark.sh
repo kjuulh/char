@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 go build -o char ../../main.go
 
 function devcharls() {

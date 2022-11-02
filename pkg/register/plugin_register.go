@@ -164,10 +164,32 @@ func (pr *PluginRegister) Close() error {
 	return nil
 }
 
+type CommandAboutItem struct {
+	Name     string
+	Args     []string
+	Required []string
+}
+
+type CommandAboutItems []*CommandAboutItem
+
+func FromAboutCommands(commands []*AboutCommand) CommandAboutItems {
+	cai := make(CommandAboutItems, 0)
+	for _, command := range commands {
+		cai = append(cai, &CommandAboutItem{
+			Name:     command.Name,
+			Args:     command.Args,
+			Required: command.Required,
+		})
+	}
+	return cai
+}
+
 type AboutItem struct {
-	Name    string
-	Version string
-	About   string
+	Name     string
+	Version  string
+	About    string
+	Vars     []string
+	Commands CommandAboutItems
 }
 
 func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
@@ -184,9 +206,11 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 			}
 
 			list = append(list, AboutItem{
-				Name:    about.Name,
-				Version: about.Version,
-				About:   about.About,
+				Name:     about.Name,
+				Version:  about.Version,
+				About:    about.About,
+				Vars:     about.Vars,
+				Commands: FromAboutCommands(about.Commands),
 			})
 			return nil
 		})

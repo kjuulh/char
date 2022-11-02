@@ -1,14 +1,17 @@
 package char
 
-import "github.com/spf13/cobra"
+import (
+	"git.front.kjuulh.io/kjuulh/char/pkg/charcontext"
+	"github.com/spf13/cobra"
+)
 
-func NewCharCmd() *cobra.Command {
+func NewCharCmd(charctx *charcontext.CharContext) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "char",
 	}
 
 	cmd.AddCommand(
-		NewLsCommand(),
+		NewLsCommand(charctx),
 	)
 
 	return cmd

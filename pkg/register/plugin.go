@@ -2,10 +2,18 @@ package register
 
 import "context"
 
+type AboutCommand struct {
+	Name     string   `json:"name" yaml:"name"`
+	Args     []string `json:"args" yaml:"args"`
+	Required []string `json:"required" yaml:"required"`
+}
+
 type About struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-	About   string `json:"about"`
+	Name     string          `json:"name"`
+	Version  string          `json:"version"`
+	About    string          `json:"about"`
+	Vars     []string        `json:"vars"`
+	Commands []*AboutCommand `json:"commands"`
 }
 
 type Plugin interface {

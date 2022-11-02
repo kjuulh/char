@@ -95,7 +95,10 @@ func (cspn CharSchemaPluginName) Get() (*PluginOps, error) {
 }
 
 type CharSchemaPlugins map[CharSchemaPluginName]*CharSchemaPlugin
+type CharSchemaPluginVarName string
+type CharSchemaPluginVars map[CharSchemaPluginVarName]string
 
 type CharSchemaPlugin struct {
 	Opts *PluginOps
+	Vars CharSchemaPluginVars `json:"vars"`
 }
