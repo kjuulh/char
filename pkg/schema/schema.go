@@ -24,14 +24,27 @@ func ParseFile(ctx context.Context, path string) (*CharSchema, error) {
 		return nil, fmt.Errorf("could not read file: %w", err)
 	}
 
+	return Parse(file)
+}
+
+func Parse(content []byte) (*CharSchema, error) {
 	var schema CharSchema
-	if err = yaml.Unmarshal(file, &schema); err != nil {
-		return nil, fmt.Errorf("could not deserialize yaml file into CharSchema: %w", err)
+	if err := yaml.Unmarshal(content, &schema); err != nil {
+		return nil, fmt.Errorf("could not deserialize yaml into CharSchema: %w", err)
 	}
 
 	return &schema, nil
 }
 
-func (cs *CharSchema) GetPlugins(ctx context.Context) (*PluginOps, error) {
-	return nil, nil
+func (cs *CharSchema) GetPlugins(ctx context.Context) (CharSchemaPlugins, error) {
+	plugins := make(map[CharSchemaPluginName]*CharSchemaPlugin, len(cs.Plugins))
+	for n, plugin := range cs.Plugins {
+		po, err := n.Get()
+		if err != nil {
+			return nil, err
+		}
+		plugin.Opts = po
+		plugins[n] = plugin
+	}
+	return plugins, nil
 }

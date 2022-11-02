@@ -87,7 +87,8 @@ func (cspn CharSchemaPluginName) Get() (*PluginOps, error) {
 	return po, nil
 }
 
-type CharSchemaPlugins map[CharSchemaPluginName]CharSchemaPlugin
+type CharSchemaPlugins map[CharSchemaPluginName]*CharSchemaPlugin
 
 type CharSchemaPlugin struct {
+	Opts *PluginOps
 }
