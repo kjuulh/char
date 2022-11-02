@@ -3,27 +3,42 @@ package char
 import (
 	"fmt"
 
+	"git.front.kjuulh.io/kjuulh/char/pkg/plugins/provider"
 	"git.front.kjuulh.io/kjuulh/char/pkg/register"
 	"git.front.kjuulh.io/kjuulh/char/pkg/schema"
 	"github.com/spf13/cobra"
 )
 
 func NewLsCommand() *cobra.Command {
+	gpp := provider.NewGitPluginProvider()
+
 	cmd := &cobra.Command{
 		Use: "ls",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 
-			_, err := schema.ParseFile(ctx, ".char.yml")
+			s, err := schema.ParseFile(ctx, ".char.yml")
 			if err != nil {
 				return err
 			}
 
-			r, err := register.
-				NewPluginRegisterBuilder().
-				Add("gocli", "plugins/gocli/main.go").
-				Add("rust", "plugins/rust/main.go").
-				Build(ctx)
+			plugins, err := s.GetPlugins(ctx)
+			if err != nil {
+				return err
+			}
+
+			err = gpp.FetchPlugins(ctx, s.Registry, plugins)
+			if err != nil {
+				return err
+			}
+
+			builder := register.NewPluginRegisterBuilder()
+
+			for name, plugin := range plugins {
+				builder = builder.Add(name.Hash(), plugin.Opts.Path)
+			}
+
+			r, err := builder.Build(ctx)
 			if err != nil {
 				return err
 			}

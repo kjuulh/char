@@ -12,7 +12,7 @@ type PluginBuilder struct {
 	serveConfig *plugin.ServeConfig
 }
 
-func NewPluginBuilder(name string, p Plugin) *PluginBuilder {
+func NewPluginBuilder(p Plugin) *PluginBuilder {
 	logger := hclog.New(&hclog.LoggerOptions{
 		Level:      hclog.Error,
 		Output:     os.Stderr,
@@ -20,7 +20,7 @@ func NewPluginBuilder(name string, p Plugin) *PluginBuilder {
 	})
 
 	var pluginMap = map[string]plugin.Plugin{
-		name: &PluginAPI{
+		"plugin": &PluginAPI{
 			Impl: p,
 		},
 	}

@@ -55,16 +55,16 @@ func TestGetPlugins(t *testing.T) {
 			input: `
 registry: git.front.kjuulh.io
 plugins:
-  "kjuulh/char#plugins/gocli": {}
+  "kjuulh/char#plugins/gocli@v1.9.0": {}
   "kjuulh/char#plugins/rust": {}
 `,
 			expected: map[schema.CharSchemaPluginName]*schema.CharSchemaPlugin{
-				"kjuulh/char#plugins/gocli": {
+				"kjuulh/char#plugins/gocli@v1.9.0": {
 					Opts: &schema.PluginOps{
 						Org:            "kjuulh",
 						RepositoryName: "char",
 						Path:           "plugins/gocli",
-						Version:        "",
+						Version:        "v1.9.0",
 					},
 				},
 				"kjuulh/char#plugins/rust": {

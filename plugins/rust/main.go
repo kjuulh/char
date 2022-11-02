@@ -22,7 +22,6 @@ var _ register.Plugin = &GoCliPlugin{}
 func main() {
 	if err := register.
 		NewPluginBuilder(
-			"rust",
 			&GoCliPlugin{},
 		).
 		Serve(context.Background()); err != nil {

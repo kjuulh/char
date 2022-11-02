@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
@@ -43,7 +44,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 		name, p := name, p
 
 		errgroup.Go(func() error {
-			pluginPath := fmt.Sprintf(".char/plugins/%s/dist/%s", name, name)
+			pluginPath := fmt.Sprintf(".char/plugins/%s/dist/cmd", name)
 
 			_, err := os.Stat(pluginPath)
 			if err != nil || os.Getenv("CHAR_DEV_MODE") == "true" {
@@ -52,10 +53,15 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 					"sh",
 					"-c",
 					fmt.Sprintf(
-						"(cd .char/plugins/%s; go build -o dist/%s %s)",
+						"(cd .char/plugins/%s; go build -o dist/plugin %s/main.go)",
 						name,
-						name,
-						p.path,
+						strings.TrimSuffix(
+							strings.TrimSuffix(
+								p.path,
+								"main.go",
+							),
+							"/",
+						),
 					),
 				)
 				output, err := cmd.CombinedOutput()
@@ -80,8 +86,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 				}),
 				Cmd: exec.Command(
 					fmt.Sprintf(
-						".char/plugins/%s/dist/%s",
-						name,
+						".char/plugins/%s/dist/plugin",
 						name,
 					),
 				),
@@ -95,7 +100,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 				return err
 			}
 
-			raw, err := rpcClient.Dispense(name)
+			raw, err := rpcClient.Dispense("plugin")
 			if err != nil {
 				return err
 			}

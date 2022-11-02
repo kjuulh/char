@@ -2,6 +2,8 @@ package schema
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"regexp"
@@ -9,6 +11,11 @@ import (
 )
 
 type CharSchemaPluginName string
+
+func (cspn CharSchemaPluginName) Hash() string {
+	bytes := sha256.Sum256([]byte(cspn))
+	return hex.EncodeToString(bytes[:])
+}
 
 type PluginOps struct {
 	Org            string
