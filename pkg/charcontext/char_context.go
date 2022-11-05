@@ -65,6 +65,7 @@ func (cc *CharContext) About(ctx context.Context) ([]register.AboutItem, error) 
 	return cc.pluginRegister.About(ctx)
 }
 
-func (cc *CharContext) Do(ctx context.Context, argName string, commandName string) error {
+func (cc *CharContext) Do(ctx context.Context, clientName string, commandName string, args map[string]string) error {
+	cc.pluginRegister.Do(ctx, clientName, commandName, args)
 	return nil
 }

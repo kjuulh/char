@@ -18,6 +18,7 @@ type About struct {
 
 type Plugin interface {
 	About(ctx context.Context) (*About, error)
+	Do(ctx context.Context, commandName string, args map[string]string) error
 }
 
 const PluginKey = "plugin"

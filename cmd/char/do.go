@@ -44,7 +44,7 @@ func NewDoCommand(charctx *charcontext.CharContext) *cobra.Command {
 						return err
 					}
 
-					if err := charctx.Do(cmd.Context(), a.Name, c.Name); err != nil {
+					if err := charctx.Do(cmd.Context(), a.ClientName, c.Name, nil); err != nil {
 						return err
 					}
 

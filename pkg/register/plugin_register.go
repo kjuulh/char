@@ -185,11 +185,12 @@ func FromAboutCommands(commands []*AboutCommand) CommandAboutItems {
 }
 
 type AboutItem struct {
-	Name     string
-	Version  string
-	About    string
-	Vars     []string
-	Commands CommandAboutItems
+	Name       string
+	Version    string
+	About      string
+	Vars       []string
+	Commands   CommandAboutItems
+	ClientName string
 }
 
 func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
@@ -197,8 +198,8 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 
 	errgroup, ctx := errgroup.WithContext(ctx)
 
-	for _, c := range pr.clients {
-		c := c
+	for name, c := range pr.clients {
+		name, c := name, c
 		errgroup.Go(func() error {
 			about, err := c.plugin.About(ctx)
 			if err != nil {
@@ -206,11 +207,12 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 			}
 
 			list = append(list, AboutItem{
-				Name:     about.Name,
-				Version:  about.Version,
-				About:    about.About,
-				Vars:     about.Vars,
-				Commands: FromAboutCommands(about.Commands),
+				Name:       about.Name,
+				Version:    about.Version,
+				About:      about.About,
+				Vars:       about.Vars,
+				Commands:   FromAboutCommands(about.Commands),
+				ClientName: name,
 			})
 			return nil
 		})
@@ -221,4 +223,19 @@ func (pr *PluginRegister) About(ctx context.Context) ([]AboutItem, error) {
 	}
 
 	return list, nil
+}
+
+func (pr *PluginRegister) Do(ctx context.Context, clientName string, commandName string, args map[string]string) error {
+	errgroup, ctx := errgroup.WithContext(ctx)
+
+	client, ok := pr.clients[clientName]
+	if !ok {
+		return fmt.Errorf("plugin was not found: %s", clientName)
+	}
+
+	errgroup.Go(func() error {
+		return client.plugin.Do(ctx, commandName, args)
+	})
+
+	return nil
 }
