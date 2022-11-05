@@ -12,7 +12,7 @@ type GoCliPlugin struct{}
 
 // Do implements register.Plugin
 func (*GoCliPlugin) Do(ctx context.Context, cmd *register.DoCommand) error {
-	hclog.L().Info("received command: %s", cmd.CommandName)
+	hclog.L().Error("received command: %s", cmd.CommandName)
 	return nil
 }
 
