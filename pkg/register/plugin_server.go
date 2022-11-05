@@ -9,7 +9,7 @@ type PluginServer struct {
 	Impl Plugin
 }
 
-func (ps *PluginServer) Do(args *DoRequest, resp *string) error {
+func (ps *PluginServer) Do(args *DoCommand, resp *string) error {
 	//rawReq, ok := args.(string)
 	//if !ok {
 	//	return errors.New("args is not a string")
@@ -20,7 +20,7 @@ func (ps *PluginServer) Do(args *DoRequest, resp *string) error {
 	//	return err
 	//}
 
-	if err := ps.Impl.Do(context.Background(), args.CommandName, args.Args); err != nil {
+	if err := ps.Impl.Do(context.Background(), args); err != nil {
 		return err
 	}
 	*resp = ""

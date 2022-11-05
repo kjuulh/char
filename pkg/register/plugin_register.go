@@ -234,7 +234,10 @@ func (pr *PluginRegister) Do(ctx context.Context, clientName string, commandName
 	}
 
 	errgroup.Go(func() error {
-		return client.plugin.Do(ctx, commandName, args)
+		return client.plugin.Do(ctx, &DoCommand{
+			CommandName: commandName,
+			Args:        args,
+		})
 	})
 
 	if err := errgroup.Wait(); err != nil {

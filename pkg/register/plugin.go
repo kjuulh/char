@@ -16,9 +16,14 @@ type About struct {
 	Commands []*AboutCommand `json:"commands"`
 }
 
+type DoCommand struct {
+	CommandName string            `json:"commandName"`
+	Args        map[string]string `json:"args"`
+}
+
 type Plugin interface {
 	About(ctx context.Context) (*About, error)
-	Do(ctx context.Context, commandName string, args map[string]string) error
+	Do(ctx context.Context, cmd *DoCommand) error
 }
 
 const PluginKey = "plugin"
