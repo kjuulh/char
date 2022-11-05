@@ -3,15 +3,21 @@ package register
 import (
 	"context"
 	"encoding/json"
+	"errors"
 )
 
 type PluginServer struct {
 	Impl Plugin
 }
 
-func (ps *PluginServer) Do(args string, resp *string) error {
+func (ps *PluginServer) Do(args any, resp *string) error {
+	rawReq, ok := args.(string)
+	if !ok {
+		return errors.New("args is not a string")
+	}
+
 	var doReq DoRequest
-	if err := json.Unmarshal([]byte(args), &doReq); err != nil {
+	if err := json.Unmarshal([]byte(rawReq), &doReq); err != nil {
 		return err
 	}
 
