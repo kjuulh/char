@@ -11,7 +11,8 @@ type GoCliPlugin struct{}
 
 // Do implements register.Plugin
 func (*GoCliPlugin) Do(ctx context.Context, cmd *register.DoCommand) error {
-	panic("unimplemented")
+	log.Printf("received command: %s", cmd.CommandName)
+	return nil
 }
 
 func (*GoCliPlugin) About(ctx context.Context) (*register.About, error) {
