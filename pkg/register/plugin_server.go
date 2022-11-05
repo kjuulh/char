@@ -9,9 +9,9 @@ type PluginServer struct {
 	Impl Plugin
 }
 
-func (ps *PluginServer) Do(args *string, resp *string) error {
+func (ps *PluginServer) Do(args string, resp *string) error {
 	var doReq DoRequest
-	if err := json.Unmarshal([]byte(*args), &doReq); err != nil {
+	if err := json.Unmarshal([]byte(args), &doReq); err != nil {
 		return err
 	}
 
