@@ -10,7 +10,7 @@ import (
 type GoCliPlugin struct{}
 
 // Do implements register.Plugin
-func (*GoCliPlugin) Do(ctx context.Context, commandName string, args map[string]string) error {
+func (*GoCliPlugin) Do(ctx context.Context, cmd *register.DoCommand) error {
 	panic("unimplemented")
 }
 
