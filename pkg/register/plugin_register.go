@@ -82,7 +82,7 @@ func (pr *PluginRegisterBuilder) Build(ctx context.Context) (*PluginRegister, er
 				Logger: hclog.New(&hclog.LoggerOptions{
 					Name:   "char",
 					Output: os.Stdout,
-					Level:  hclog.Info,
+					Level:  hclog.Debug,
 				}),
 				Cmd: exec.Command(
 					fmt.Sprintf(

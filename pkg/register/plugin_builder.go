@@ -14,7 +14,7 @@ type PluginBuilder struct {
 
 func NewPluginBuilder(p Plugin) *PluginBuilder {
 	logger := hclog.New(&hclog.LoggerOptions{
-		Level:      hclog.Info,
+		Level:      hclog.Debug,
 		Output:     os.Stderr,
 		JSONFormat: false,
 	})
