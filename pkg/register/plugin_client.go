@@ -21,11 +21,11 @@ func (pc *PluginClient) Do(ctx context.Context, commandName string, args map[str
 		CommandName: commandName,
 		Args:        args,
 	}
-	doReq, err := json.Marshal(req)
-	if err != nil {
-		return err
-	}
-	err = pc.client.Call("Plugin.Do", doReq, new(any))
+	//doReq, err := json.Marshal(req)
+	//if err != nil {
+	//	return err
+	//}
+	err := pc.client.Call("Plugin.Do", req, new(any))
 	if err != nil {
 		return err
 	}
