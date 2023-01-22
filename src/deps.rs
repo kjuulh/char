@@ -1,5 +1,5 @@
 use std::{
-    ops::{Deref, DerefMut},
+    ops::{Deref},
     sync::Arc,
 };
 

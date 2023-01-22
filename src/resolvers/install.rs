@@ -20,7 +20,7 @@ impl Resolver for Install {
         Ok(install)
     }
 
-    fn matches(&self, args: &clap::ArgMatches) -> eyre::Result<()> {
+    fn matches(&self, _args: &clap::ArgMatches) -> eyre::Result<()> {
         let char = self.deps.parser.parse()?;
 
         dbg!(char);

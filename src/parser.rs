@@ -19,8 +19,8 @@ impl Parser {
         }
     }
 
-    pub fn set_path(&self, path: PathBuf) {
-        let writer = self.path.write().unwrap();
+    pub fn set_path(&self, _path: PathBuf) {
+        let _writer = self.path.write().unwrap();
     }
 
     pub fn parse(&self) -> eyre::Result<models::Char> {

@@ -1,4 +1,4 @@
-use std::{ops::DerefMut, path::PathBuf};
+use std::{path::PathBuf};
 
 use crate::{
     deps,
