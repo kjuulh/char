@@ -2,6 +2,7 @@ use crate::deps;
 
 use super::{DynResolver, Resolver};
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct Install {
     deps: deps::Deps,
@@ -21,9 +22,7 @@ impl Resolver for Install {
     }
 
     fn matches(&self, _args: &clap::ArgMatches) -> eyre::Result<()> {
-        let char = self.deps.parser.parse()?;
-
-        dbg!(char);
+        self.deps.downloader.download()?;
 
         Ok(())
     }

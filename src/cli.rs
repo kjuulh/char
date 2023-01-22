@@ -1,4 +1,4 @@
-use std::{path::PathBuf};
+use std::path::PathBuf;
 
 use crate::{
     deps,
@@ -27,11 +27,11 @@ impl Cli {
 
         let path = matches.get_one::<String>("path");
         if let Some(p) = path {
-            let validated_path = PathBuf::from(p);
-            if !validated_path.exists() {
+            let path = PathBuf::from(p);
+            if !path.exists() {
                 eyre::bail!("no char.toml exists at --path")
             }
-            self.deps.parser.set_path(validated_path);
+            self.deps.parser.set_path(path);
         }
 
         match matches.subcommand() {

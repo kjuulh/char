@@ -7,9 +7,9 @@ type Dependencies = Vec<String>;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Conf {
-    plan: String,
-    dependencies: Option<Dependencies>,
-    overrides: Option<Overrides>,
+    pub plan: String,
+    pub dependencies: Option<Dependencies>,
+    pub overrides: Option<Overrides>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
