@@ -1,0 +1,55 @@
+[char]
+plan = "plans/base/"
+dependencies = ["plans/extension"]
+
+[char.overrides]
+org = "overrides/org"
+
+[application]
+name = "service"
+
+[config]
+# provides both local and k8s by default can also be set using:
+# config.k8s.rabbitmq = true
+# config.docker-compose.rabbitmq = true
+rabbitmq = true
+postgres = true
+
+[config.org]
+squad = "kjuulh"
+domain = "tooling"
+
+[config.pipeline]
+path = "char/ci/" # most of these are default, showing them here as a showcase
+
+[config.actions]
+path = "char/actions"
+
+[config.releaser]
+type = "rust-releaser"
+
+[config.cargo]
+crates = ["crates/service_core", "crates/service_util"]
+
+[config.rust_bin]
+name = "service"
+logging = { pretty = true }
+
+[config.environments.local]
+type = "docker-compose" # technically default
+
+[config.environments.local.env]
+"env" = "local"
+"db.hostname" = "postgres"
+"db.secret" = "postgres"
+
+[config.k8s]
+monitoring = true
+
+[config.environments.dev]
+type = "k8s"
+
+[config.environments.local.dev]
+"env" = "local"
+"db.hostname" = "service-db"
+"db.secret" = { type = "secret" }

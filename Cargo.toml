@@ -6,16 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-eyre.workspace = true
-clap = { workspace = true }
-tracing-subscriber = { workspace = true }
-
-color-eyre = "*"
-
-[workspace]
-members = ["crates/char_core"]
-
-[workspace.dependencies]
+clap = "4.1.1"
+color-eyre = "0.6.2"
 eyre = "0.6.8"
-clap = "*"
-tracing-subscriber = "*"
+serde = { version = "1.0.152", features = ["derive"] }
+toml = { version = "0.5.11", features = ["preserve_order"] }
