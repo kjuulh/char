@@ -1,2 +1,8 @@
 [char]
 plan = "plans/base/"
+
+[config.docker]
+something = "something"
+
+[config.k8s]
+something = "else"
