@@ -63,10 +63,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "char"
-version = "0.1.0"
-
-[[package]]
 name = "char_cli"
 version = "0.1.0"
 dependencies = [
@@ -82,12 +78,15 @@ dependencies = [
 name = "char_plan"
 version = "0.1.0"
 dependencies = [
- "char",
+ "char_sdk",
 ]
 
 [[package]]
 name = "char_sdk"
 version = "0.1.0"
+dependencies = [
+ "eyre",
+]
 
 [[package]]
 name = "clap"

@@ -6,4 +6,4 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-char = { path = "../../../crates/char" }
+char_sdk = { path = "../../../crates/char_sdk" }

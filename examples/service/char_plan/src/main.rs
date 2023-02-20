@@ -1,14 +1,15 @@
 struct Run;
-impl char::Action for Run {}
+impl char_sdk::Action for Run {}
 
 struct Build;
-impl char::Action for Build {}
+impl char_sdk::Action for Build {}
 
 fn main() {
-    char::new()
-        .add_context(char::dagger::Context::default())
+    char_sdk::CharBuilder::new()
+        .add_context(char_sdk::std::dagger::Context::default())
         .add_action(Run {})
         .add_action(Build {})
-        .add_plugin(char::std::k8s::Context::default())
-        .execute();
+        .add_plugin(char_sdk::std::k8s::Plugin::default())
+        .execute()
+        .unwrap();
 }

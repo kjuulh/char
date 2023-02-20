@@ -1,14 +1,28 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+pub mod std;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub trait Action {}
+pub trait Plugin {}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+pub struct CharBuilder;
+
+impl CharBuilder {
+    pub fn new() -> Self {
+        CharBuilder
+    }
+
+    pub fn add_context<C>(mut self, context: C) -> Self {
+        self
+    }
+
+    pub fn add_action(mut self, action: impl Action) -> Self {
+        self
+    }
+
+    pub fn add_plugin(mut self, plugin: impl Plugin) -> Self {
+        self
+    }
+
+    pub fn execute(mut self) -> eyre::Result<()> {
+        Ok(())
     }
 }
