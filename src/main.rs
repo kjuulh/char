@@ -1,10 +1,10 @@
 pub mod cli;
+mod context;
 mod deps;
 mod models;
 mod parser;
 mod resolvers;
 mod services;
-mod context;
 
 fn main() -> eyre::Result<()> {
     color_eyre::install()?;
