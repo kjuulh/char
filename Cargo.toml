@@ -1,7 +1,13 @@
 [workspace]
-members = ["examples/service/char", "crates/char_cli", "crates/char_sdk"]
+members = [
+  "examples/service/char_plan",
+  "crates/char_cli",
+  "crates/char_sdk",
+  "crates/char",
+]
 
 [workspace.dependencies]
-eyre = "*"
-color-eyre = "*"
-tokio = { version = "*", features = "full" }
+eyre = "0.6.8"
+color-eyre = "0.6.2"
+tokio = { version = "1.25.0", features = ["full"] }
+tracing = { version = "0.1.37", features = ["log"] }
