@@ -1,6 +1,8 @@
-pub struct Context {}
+pub struct Plugin {}
 
-impl Default for Context {
+impl crate::Plugin for Plugin {}
+
+impl Default for Plugin {
     fn default() -> Self {
         Self {}
     }

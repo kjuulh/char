@@ -1,5 +1,10 @@
 [workspace]
-members = ["examples/service/char_plan", "crates/char_cli", "crates/char_sdk"]
+members = [
+  "examples/service/char_plan",
+  "crates/char_cli",
+  "crates/char_sdk",
+  "crates/char_sdk_derive",
+]
 
 [workspace.dependencies]
 eyre = "0.6.8"

@@ -7,3 +7,7 @@ edition = "2021"
 
 [dependencies]
 char_sdk = { path = "../../../crates/char_sdk" }
+char_sdk_derive = { path = "../../../crates/char_sdk_derive" }
+
+eyre = { workspace = true }
+tokio = { workspace = true }
