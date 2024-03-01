@@ -3,11 +3,11 @@ module git.front.kjuulh.io/kjuulh/char
 go 1.19
 
 require (
-	github.com/hashicorp/go-hclog v1.5.0
-	github.com/hashicorp/go-plugin v1.4.9
-	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.2
-	golang.org/x/sync v0.2.0
+	github.com/hashicorp/go-hclog v1.6.2
+	github.com/hashicorp/go-plugin v1.6.0
+	github.com/spf13/cobra v1.8.0
+	github.com/stretchr/testify v1.9.0
+	golang.org/x/sync v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
